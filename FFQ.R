@@ -31,12 +31,10 @@ library(xlsx)
 #---------------Loading Data---------- (Step 2)
 Codes <- read_excel("Codes.xlsx")
 f_portion<- read_excel("EatWellQ8_Results_Final.xlsx", "Freq portion")
-M1 <- read_excel("M1.xlsx")
-M2 <- read_excel("M2.xlsx")
-M3 <- M2*0.01
-M4 <- as.matrix(sapply(M1, as.numeric)) 
-M5 <- as.matrix(sapply(M3, as.numeric)) 
-M6 <- M4 %*% M5
+NU <- read_excel("M2.xlsx")
+NUN <- NU*0.01
+
+
 #---------------Coding Baseline factors---------- (Step 3)
 f_portion[ , 5:151] <- ifelse(f_portion[ , 5:151] == "1 per day", 1,
                        ifelse(f_portion[ , 5:151] == "1 per week", 0.14,
@@ -49,31 +47,30 @@ f_portion[ , 5:151] <- ifelse(f_portion[ , 5:151] == "1 per day", 1,
                        ifelse(f_portion[ , 5:151] == "Not in the last month", 0,NA)))))))))
 
 
+f_portion1 <- as.matrix(f_portion)
+Codes1 <- as.matrix(Codes)
 
+system.time({
 for (i in 1:1214){
-  for (j in 152:298)
-    for (k in 1:147)
-    { 
-      ifelse(f_portion[ i, j] == "A" & colnames(f_portion[ i , j]) == Codes$id[k], f_portion[ i , j] <- Codes$B[k], f_portion[ i , j])}}
+  for (j in 152:298){
+    for (k in 1:147){ 
+      ifelse(f_portion1[ i, j] == "A" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,4]),
+             ifelse(f_portion1[ i, j] == "B" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,5]),
+                    ifelse(f_portion1[ i, j] == "C" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,6]),
+                           ifelse(f_portion1[ i, j] == "None" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- 0,0))))}
+}}})
 
-for (i in 1:1214){
-  for (j in 152:298)
-    for (k in 1:147)
-    { 
-    ifelse(f_portion[ i, j] == "B" & colnames(f_portion[ i , j]) == Codes$id[k], f_portion[ i , j] <- Codes$B[k], f_portion[ i , j])}}
 
-for (i in 1:1214){
-  for (j in 152:298)
-    for (k in 1:147)
-    { 
-      ifelse(f_portion[ i, j] == "C" & colnames(f_portion[ i , j]) == Codes$id[k], f_portion[ i , j] <- Codes$B[k], f_portion[ i , j])}}
+a <- as.data.frame(f_portion1[ , 152:298])
+t1 <- data.matrix(a)
+t2 <- data.matrix(NUN)
+t3 <- t1 %*% t2
 
-for (i in 1:1214){
-  for (j in 152:298)
-    for (k in 1:147)
-    { 
-      ifelse(f_portion[ i, j] == "None" & colnames(f_portion[ i , j]) == Codes$id[k], f_portion[ i , j] <- 0, f_portion[ i , j])}}
 
+#FP <- as.matrix(sapply(f_portion1, as.numeric))
+#NUN1 <- as.matrix(sapply(NUN, as.numeric))
+#FP1 <- as.matrix(sapply(FP, as.numeric))
+#PD <- FP1[,152:298] %*% NUN1
 
 #write.xlsx(f_portion, file = "table1.xlsx",sheetName="MTCARS", append=TRUE)
 
