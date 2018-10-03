@@ -30,7 +30,8 @@ library(foreign)
 library(xlsx)
 #---------------Loading Data---------- (Step 2)
 Codes <- read_excel("Codes.xlsx")
-f_portion<- read_excel("EatWellQ8_Results_Final.xlsx", "Freq portion")
+Codes[, 4:7] <- sapply(Codes[, 4:7], as.numeric)
+f_portion <- read_excel("EatWellQ8_Results_Final.xlsx", "Freq portion")
 NU <- read_excel("M2.xlsx")
 NUN <- NU*0.01
 
@@ -46,7 +47,6 @@ f_portion[ , 5:151] <- ifelse(f_portion[ , 5:151] == "1 per day", 1,
                        ifelse(f_portion[ , 5:151] == "7+ per day", 6.00,
                        ifelse(f_portion[ , 5:151] == "Not in the last month", 0,NA)))))))))
 
-
 f_portion1 <- as.matrix(f_portion)
 Codes1 <- as.matrix(Codes)
 
@@ -57,22 +57,34 @@ for (i in 1:1214){
       ifelse(f_portion1[ i, j] == "A" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,4]),
              ifelse(f_portion1[ i, j] == "B" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,5]),
                     ifelse(f_portion1[ i, j] == "C" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,6]),
-                           ifelse(f_portion1[ i, j] == "None" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- 0,0))))}
+                           ifelse(f_portion1[ i, j] == "None" & names(f_portion1[ i , j]) == Codes1[k,1], f_portion1[ i , j] <- as.numeric(Codes1[k,7]),0))))}
 }}})
 
+a <- as.data.frame(f_portion1[,152:298])
+v <- as.data.frame(f_portion1[,5:151])
+b <- matrix(0,1214,147)
+c <- matrix(0,1214,147)
 
-a <- as.data.frame(f_portion1[ , 152:298])
-t1 <- data.matrix(a)
+system.time({
+for (m in 1:1214){
+  for (n in 1:147){
+    b[m,n] <- as.numeric(as.character(a[m,n]))
+  }
+}
+})
+
+system.time({
+  for (m in 1:1214){
+    for (n in 1:147){
+      c[m,n] <- as.numeric(as.character(v[m,n]))
+    }
+  }
+})
+
+
+cb <- c * b
+
 t2 <- data.matrix(NUN)
-t3 <- t1 %*% t2
+t3 <- cb %*% t2
 
-
-#FP <- as.matrix(sapply(f_portion1, as.numeric))
-#NUN1 <- as.matrix(sapply(NUN, as.numeric))
-#FP1 <- as.matrix(sapply(FP, as.numeric))
-#PD <- FP1[,152:298] %*% NUN1
-
-#write.xlsx(f_portion, file = "table1.xlsx",sheetName="MTCARS", append=TRUE)
-
-#write.xlsx(M6, file = "m6.xlsx",sheetName="m6", append=TRUE)
 
