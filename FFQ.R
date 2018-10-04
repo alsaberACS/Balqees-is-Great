@@ -132,3 +132,5 @@ r3<-crosstabs(Bale2,Bale2$FERQ,Bale2$Group)
 
 write.xlsx(Bale2, file = "Bale1.xlsx", 
            sheetName="Data", append=TRUE)
+write.xlsx(f_portion1, file = "f_portion1.xlsx", 
+           sheetName="Data", append=TRUE)
