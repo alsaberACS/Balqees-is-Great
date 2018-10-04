@@ -3,6 +3,34 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>")
 #---------------Libraries-------------- (Step 1)
+install.packages(finalfit)
+install.packages(Hmisc)
+install.packages(dplyr)
+install.packages(ggplot2)
+install.packages(tibble)
+install.packages(readxl)
+install.packages(data.table)
+install.packages(lubridate)
+install.packages(eeptools) 
+install.packages(zoo)
+install.packages(magrittr)
+install.packages(tibble)
+install.packages(compareGroups)
+install.packages(data.table)
+install.packages(qwraps2)
+install.packages(readxl)
+install.packages(plyr)
+install.packages(xlsxjars)
+install.packages(rJava)
+install.packages(psych)
+install.packages(gdata)
+install.packages(expss)
+install.packages(Hmisc)
+install.packages(foreign)
+install.packages(xlsx)
+install.packages(arsenal)
+install.packages(rmarkdown)
+
 library(finalfit)
 library(Hmisc)
 library(dplyr)
@@ -44,14 +72,14 @@ NUN <- NU*0.01
 
 
 #---------------Coding Baseline factors---------- (Step 3)
-f_portion[ , 5:151] <- ifelse(f_portion[ , 5:151] == "1 per day", 1,
-                       ifelse(f_portion[ , 5:151] == "1 per week", 0.14,
-                       ifelse(f_portion[ , 5:151] == "1-3 in the last month", 0.03,
-                       ifelse(f_portion[ , 5:151] == "2-3 per day", 2.50,
-                       ifelse(f_portion[ , 5:151] == "2-4 per week", 0.43,
-                       ifelse(f_portion[ , 5:151] == "4-6 per day", 4.50,
-                       ifelse(f_portion[ , 5:151] == "5-6 per week", 0.79,
-                       ifelse(f_portion[ , 5:151] == "7+ per day", 6.00,
+f_portion[ , 5:151] <- ifelse(f_portion[ , 5:151] == "1 per day", 0.0000,
+                       ifelse(f_portion[ , 5:151] == "1 per week", 0.1429,
+                       ifelse(f_portion[ , 5:151] == "1-3 in the last month", 0.0667,
+                       ifelse(f_portion[ , 5:151] == "2-3 per day", 2.5000,
+                       ifelse(f_portion[ , 5:151] == "2-4 per week", 0.4286,
+                       ifelse(f_portion[ , 5:151] == "4-6 per day", 5.0000,
+                       ifelse(f_portion[ , 5:151] == "5-6 per week", 0.7857,
+                       ifelse(f_portion[ , 5:151] == "7+ per day", 6.0000,
                        ifelse(f_portion[ , 5:151] == "Not in the last month", 0,NA)))))))))
 
 f_portion1 <- as.matrix(f_portion)
