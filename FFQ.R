@@ -28,10 +28,17 @@ library(expss)
 library(Hmisc)
 library(foreign)
 library(xlsx)
+library(arsenal)
+library(rmarkdown)
 #---------------Loading Data---------- (Step 2)
 Codes <- read_excel("Codes.xlsx")
 Codes[, 4:7] <- sapply(Codes[, 4:7], as.numeric)
 f_portion <- read_excel("EatWellQ8_Results_Final.xlsx", "Freq portion")
+screening <- read_excel("EatWellQ8_Results_Final.xlsx", "Screening")
+HES <- read_excel("EatWellQ8_Results_Final.xlsx", "HES")
+Baecke <- read_excel("EatWellQ8_Results_Final.xlsx", "Baecke")
+Feedback <- read_excel("EatWellQ8_Results_Final.xlsx", "Feedback")
+
 NU <- read_excel("M2.xlsx")
 NUN <- NU*0.01
 
@@ -83,8 +90,17 @@ system.time({
 
 
 cb <- c * b
-
 t2 <- data.matrix(NUN)
 t3 <- cb %*% t2
 
+Bale1 <- cbind(f_portion[ , 1],t3)
+Bale1$FERQ <- sequence(rle(Bale1$userID)$lengths)
+Bale2 <- left_join(Bale1,screening, by = "userID", all = TRUE)
+Bale3 <- merge(Bale1,Feedback, by = "userID", all = TRUE)
 
+r1<-tableby(~Group,data = Bale2)
+r2<-tableby(~FERQ,data = Bale2)
+r3<-crosstabs(Bale2,Bale2$FERQ,Bale2$Group)
+
+write.xlsx(Bale2, file = "Bale1.xlsx", 
+           sheetName="Data", append=TRUE)
